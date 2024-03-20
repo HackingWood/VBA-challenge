@@ -1,0 +1,40 @@
+Sub CreateCondensedStockListWithTotalVolume()
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim currentStock As String
+    Dim row As Long
+    Dim jRow As Long
+    Dim totalVolume As Double
+
+    For Each ws In ThisWorkbook.Worksheets
+        lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).row
+
+        jRow = 1 ' Start from row 1 in column J
+        totalVolume = 0
+
+        For row = 2 To lastRow ' Assuming row 1 contains headers
+            If ws.Cells(row, 1).Value <> currentStock Then
+                ' Write the current stock name to column J, starting from row 1
+                ws.Cells(jRow, 10).Value = currentStock
+
+                ' Write the total volume for the current stock to column N
+                ws.Cells(jRow, 14).Value = totalVolume
+
+                jRow = jRow + 1
+                totalVolume = 0 ' Reset total volume for the new stock
+
+                ' Update the current stock name to the new stock
+                currentStock = ws.Cells(row, 1).Value
+            End If
+
+            ' Calculate total volume for the current stock
+            totalVolume = totalVolume + ws.Cells(row, 7).Value
+        Next row
+
+        ' Write the last stock name to column J
+        ws.Cells(jRow, 10).Value = currentStock
+
+        ' Write the total volume for the last stock to column N
+        ws.Cells(jRow, 14).Value = totalVolume
+    Next ws
+End Sub
